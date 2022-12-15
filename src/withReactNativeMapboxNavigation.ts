@@ -199,11 +199,12 @@ export function addMapboxInstallerBlock(
 const withReactNativeMapboxNavigation: ConfigPlugin<
   MapboxNavigationPlugProps
 > = (config, { RNMBNAVDownloadToken, RNMBNAVPublicToken }) => {
-  config = withExcludedSimulatorArchitectures(config);
-  return withCocoaPodsInstallerBlocks(config, {
-    RNMBNAVDownloadToken,
-    RNMBNAVPublicToken,
-  });
+  return withExcludedSimulatorArchitectures(
+    withCocoaPodsInstallerBlocks(config, {
+      RNMBNAVDownloadToken,
+      RNMBNAVPublicToken,
+    })
+  );
 };
 
 const pkg = {
