@@ -1,5 +1,5 @@
 {
-  "name": "@config-plugins/react-native-mapbox-navigation",
+  "name": "@comediadesign/react-native-mapbox-navigation-expo-plugin",
   "version": "0.0.0",
   "description": "Config plugin for react-native-mapbox-navigation package",
   "main": "build/withReactNativeMapboxNavigation.js",
