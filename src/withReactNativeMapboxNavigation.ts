@@ -41,7 +41,6 @@ const withExcludedSimulatorArchitectures: ConfigPlugin = (c) => {
 type InstallerBlockName = "pre" | "post";
 
 export type MapboxNavigationPlugProps = {
-  RNMBNAVVersion?: string;
   RNMBNAVDownloadToken?: string;
   RNMBNAVPublicToken?: string;
   RNMapboxMapsVersion?: string;
@@ -56,12 +55,7 @@ export type MapboxNavigationPlugProps = {
  */
 const withCocoaPodsInstallerBlocks: ConfigPlugin<MapboxNavigationPlugProps> = (
   c,
-  {
-    RNMBNAVVersion,
-    RNMBNAVDownloadToken,
-    RNMBNAVPublicToken,
-    RNMapboxMapsVersion,
-  }
+  { RNMBNAVDownloadToken, RNMBNAVPublicToken, RNMapboxMapsVersion }
 ) => {
   return withDangerousMod(c, [
     "ios",
@@ -73,7 +67,6 @@ const withCocoaPodsInstallerBlocks: ConfigPlugin<MapboxNavigationPlugProps> = (
       await promises.writeFile(
         file,
         applyCocoaPodsModifications(contents, {
-          RNMBNAVVersion,
           RNMBNAVDownloadToken,
           RNMBNAVPublicToken,
           RNMapboxMapsVersion,
@@ -90,7 +83,6 @@ const withCocoaPodsInstallerBlocks: ConfigPlugin<MapboxNavigationPlugProps> = (
 export function applyCocoaPodsModifications(
   contents: string,
   {
-    RNMBNAVVersion,
     RNMBNAVDownloadToken,
     RNMBNAVPublicToken,
     RNMapboxMapsVersion,
@@ -99,7 +91,6 @@ export function applyCocoaPodsModifications(
   // Ensure installer blocks exist
   let src = addConstantBlock(
     contents,
-    RNMBNAVVersion,
     RNMBNAVDownloadToken,
     RNMBNAVPublicToken,
     RNMapboxMapsVersion
@@ -114,7 +105,6 @@ export function applyCocoaPodsModifications(
 
 export function addConstantBlock(
   src: string,
-  RNMBNAVVersion?: string,
   RNMBNAVDownloadToken?: string,
   RNMBNAVPublicToken?: string,
   RNMapboxMapsVersion?: string
@@ -125,9 +115,6 @@ export function addConstantBlock(
     tag,
     src,
     newSrc: [
-      RNMBNAVVersion && RNMBNAVVersion.length > 0
-        ? `$RNMBNAVVersion = '${RNMBNAVVersion}'`
-        : "",
       RNMBNAVDownloadToken && RNMBNAVDownloadToken.length > 0
         ? `$RNMBNAVDownloadToken = '${RNMBNAVDownloadToken}'`
         : "",
@@ -211,10 +198,9 @@ export function addMapboxInstallerBlock(
  */
 const withReactNativeMapboxNavigation: ConfigPlugin<
   MapboxNavigationPlugProps
-> = (config, { RNMBNAVVersion, RNMBNAVDownloadToken, RNMBNAVPublicToken }) => {
+> = (config, { RNMBNAVDownloadToken, RNMBNAVPublicToken }) => {
   config = withExcludedSimulatorArchitectures(config);
   return withCocoaPodsInstallerBlocks(config, {
-    RNMBNAVVersion,
     RNMBNAVDownloadToken,
     RNMBNAVPublicToken,
   });
