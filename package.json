@@ -1,0 +1,39 @@
+{
+  "name": "@config-plugins/react-native-mapbox-navigation",
+  "version": "0.0.0",
+  "description": "Config plugin for react-native-mapbox-navigation package",
+  "main": "build/withReactNativeMapboxNavigation.js",
+  "types": "build/withReactNativeMapboxNavigation.d.ts",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/comediadesign/react-native-mapbox-navigation-expo-plugin.git"
+  },
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module"
+  },
+  "keywords": [
+    "react",
+    "expo",
+    "config-plugins",
+    "prebuild",
+    "react-native-mapbox-navigation",
+    "expo-47"
+  ],
+  "jest": {
+    "preset": "expo-module-scripts"
+  },
+  "peerDependencies": {
+    "expo": "^46.0.2"
+  },
+  "devDependencies": {
+    "expo-module-scripts": "^3.0.3"
+  },
+  "upstreamPackage": "@comediadesign/react-native-mapbox-navigation"
+}
