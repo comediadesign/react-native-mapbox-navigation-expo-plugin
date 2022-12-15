@@ -6,6 +6,7 @@ import {
   withDangerousMod,
   withXcodeProject,
   XcodeProject,
+  withInfoPlist,
 } from "@expo/config-plugins";
 import {
   mergeContents,
@@ -42,8 +43,8 @@ type InstallerBlockName = "pre" | "post";
 
 export type MapboxNavigationPlugProps = {
   RNMBNAVDownloadToken?: string;
-  RNMBNAVPublicToken?: string;
-  RNMapboxMapsVersion?: string;
+  MBXAccessToken?: string;
+  NSLocationWhenInUseUsageDescription?: string;
 };
 
 /**
@@ -55,7 +56,7 @@ export type MapboxNavigationPlugProps = {
  */
 const withCocoaPodsInstallerBlocks: ConfigPlugin<MapboxNavigationPlugProps> = (
   c,
-  { RNMBNAVDownloadToken, RNMBNAVPublicToken, RNMapboxMapsVersion }
+  { RNMBNAVDownloadToken }
 ) => {
   return withDangerousMod(c, [
     "ios",
@@ -68,8 +69,6 @@ const withCocoaPodsInstallerBlocks: ConfigPlugin<MapboxNavigationPlugProps> = (
         file,
         applyCocoaPodsModifications(contents, {
           RNMBNAVDownloadToken,
-          RNMBNAVPublicToken,
-          RNMapboxMapsVersion,
         }),
         "utf-8"
       );
@@ -82,19 +81,10 @@ const withCocoaPodsInstallerBlocks: ConfigPlugin<MapboxNavigationPlugProps> = (
 // used for spm (swift package manager) which Expo doesn't currently support.
 export function applyCocoaPodsModifications(
   contents: string,
-  {
-    RNMBNAVDownloadToken,
-    RNMBNAVPublicToken,
-    RNMapboxMapsVersion,
-  }: MapboxNavigationPlugProps
+  { RNMBNAVDownloadToken }: MapboxNavigationPlugProps
 ): string {
   // Ensure installer blocks exist
-  let src = addConstantBlock(
-    contents,
-    RNMBNAVDownloadToken,
-    RNMBNAVPublicToken,
-    RNMapboxMapsVersion
-  );
+  let src = addConstantBlock(contents, RNMBNAVDownloadToken);
   src = addDisableOutputPathsBlock(src);
   src = addInstallerBlock(src, "pre");
   src = addInstallerBlock(src, "post");
@@ -105,9 +95,7 @@ export function applyCocoaPodsModifications(
 
 export function addConstantBlock(
   src: string,
-  RNMBNAVDownloadToken?: string,
-  RNMBNAVPublicToken?: string,
-  RNMapboxMapsVersion?: string
+  RNMBNAVDownloadToken?: string
 ): string {
   const tag = `@comediadesign/react-native-mapbox-navigation-rbmbnaversion`;
 
@@ -117,12 +105,6 @@ export function addConstantBlock(
     newSrc: [
       RNMBNAVDownloadToken && RNMBNAVDownloadToken.length > 0
         ? `$RNMBNAVDownloadToken = '${RNMBNAVDownloadToken}'`
-        : "",
-      RNMBNAVPublicToken && RNMBNAVPublicToken.length > 0
-        ? `$RNMBNAVPublicToken = '${RNMBNAVPublicToken}'`
-        : "",
-      RNMapboxMapsVersion && RNMapboxMapsVersion.length > 0
-        ? `$RNMapboxMapsVersion = '${RNMapboxMapsVersion}'`
         : "",
     ].join("\n"),
     anchor: /target .+ do/,
@@ -193,17 +175,38 @@ export function addMapboxInstallerBlock(
   }).contents;
 }
 
+const withNavigationInfoPlist: ConfigPlugin<MapboxNavigationPlugProps> = (
+  config,
+  { MBXAccessToken, NSLocationWhenInUseUsageDescription }
+) => {
+  return withInfoPlist(config, (config) => {
+    config.modResults.UIBackgroundModes = ["audio", "location"];
+    config.modResults.MBXAccessToken = MBXAccessToken;
+    config.modResults.NSLocationWhenInUseUsageDescription =
+      NSLocationWhenInUseUsageDescription || "provide navigation";
+    return config;
+  });
+};
+
 /**
  * Apply react-native-mapbox-navigation configuration for Expo SDK 47 projects.
  */
 const withReactNativeMapboxNavigation: ConfigPlugin<
   MapboxNavigationPlugProps
-> = (config, { RNMBNAVDownloadToken, RNMBNAVPublicToken }) => {
+> = (
+  config,
+  { RNMBNAVDownloadToken, MBXAccessToken, NSLocationWhenInUseUsageDescription }
+) => {
   return withExcludedSimulatorArchitectures(
-    withCocoaPodsInstallerBlocks(config, {
-      RNMBNAVDownloadToken,
-      RNMBNAVPublicToken,
-    })
+    withNavigationInfoPlist(
+      withCocoaPodsInstallerBlocks(config, {
+        RNMBNAVDownloadToken,
+      }),
+      {
+        MBXAccessToken,
+        NSLocationWhenInUseUsageDescription,
+      }
+    )
   );
 };
 
