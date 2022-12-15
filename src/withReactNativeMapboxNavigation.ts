@@ -188,6 +188,26 @@ const withNavigationInfoPlist: ConfigPlugin<MapboxNavigationPlugProps> = (
   });
 };
 
+const withIosDeploymentTargetXcodeProject = (config) => {
+  return withXcodeProject(config, (config) => {
+    config.modResults = updateDeploymentTargetXcodeProject(config.modResults);
+    return config;
+  });
+};
+
+export function updateDeploymentTargetXcodeProject(
+  project: XcodeProject
+): XcodeProject {
+  const configurations = project.pbxXCBuildConfigurationSection();
+  // @ts-ignore
+  for (const { buildSettings } of Object.values(configurations ?? {})) {
+    buildSettings.IPHONEOS_DEPLOYMENT_TARGET = "13.0";
+    buildSettings.ONLY_ACTIVE_ARCH = "NO";
+    buildSettings.CODE_SIGNING_ALLOWED = "NO";
+  }
+  return project;
+}
+
 /**
  * Apply react-native-mapbox-navigation configuration for Expo SDK 47 projects.
  */
@@ -199,9 +219,11 @@ const withReactNativeMapboxNavigation: ConfigPlugin<
 ) => {
   return withExcludedSimulatorArchitectures(
     withNavigationInfoPlist(
-      withCocoaPodsInstallerBlocks(config, {
-        RNMBNAVDownloadToken,
-      }),
+      withIosDeploymentTargetXcodeProject(
+        withCocoaPodsInstallerBlocks(config, {
+          RNMBNAVDownloadToken,
+        })
+      ),
       {
         MBXAccessToken,
         NSLocationWhenInUseUsageDescription,
