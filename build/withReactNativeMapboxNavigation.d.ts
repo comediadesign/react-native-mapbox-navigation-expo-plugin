@@ -7,13 +7,14 @@ export declare function setExcludedArchitectures(project: XcodeProject): XcodePr
 type InstallerBlockName = "pre" | "post";
 export type MapboxNavigationPlugProps = {
     RNMBNAVDownloadToken?: string;
-    RNMBNAVPublicToken?: string;
-    RNMapboxMapsVersion?: string;
+    MBXAccessToken?: string;
+    NSLocationWhenInUseUsageDescription?: string;
 };
-export declare function applyCocoaPodsModifications(contents: string, { RNMBNAVDownloadToken, RNMBNAVPublicToken, RNMapboxMapsVersion, }: MapboxNavigationPlugProps): string;
-export declare function addConstantBlock(src: string, RNMBNAVDownloadToken?: string, RNMBNAVPublicToken?: string, RNMapboxMapsVersion?: string): string;
+export declare function applyCocoaPodsModifications(contents: string, { RNMBNAVDownloadToken }: MapboxNavigationPlugProps): string;
+export declare function addConstantBlock(src: string, RNMBNAVDownloadToken?: string): string;
 export declare function addDisableOutputPathsBlock(src: string): string;
 export declare function addInstallerBlock(src: string, blockName: InstallerBlockName): string;
 export declare function addMapboxInstallerBlock(src: string, blockName: InstallerBlockName): string;
+export declare function updateDeploymentTargetXcodeProject(project: XcodeProject): XcodeProject;
 declare const _default: ConfigPlugin<MapboxNavigationPlugProps>;
 export default _default;

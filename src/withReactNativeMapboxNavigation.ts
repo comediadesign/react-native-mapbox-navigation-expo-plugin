@@ -188,7 +188,7 @@ const withNavigationInfoPlist: ConfigPlugin<MapboxNavigationPlugProps> = (
   });
 };
 
-const withIosDeploymentTargetXcodeProject = (config) => {
+const withIosDeploymentTargetXcodeProject: ConfigPlugin<void> = (config) => {
   return withXcodeProject(config, (config) => {
     config.modResults = updateDeploymentTargetXcodeProject(config.modResults);
     return config;
