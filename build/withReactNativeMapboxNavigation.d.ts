@@ -15,6 +15,5 @@ export declare function addConstantBlock(src: string, RNMBNAVDownloadToken?: str
 export declare function addDisableOutputPathsBlock(src: string): string;
 export declare function addInstallerBlock(src: string, blockName: InstallerBlockName): string;
 export declare function addMapboxInstallerBlock(src: string, blockName: InstallerBlockName): string;
-export declare function updateDeploymentTargetXcodeProject(project: XcodeProject): XcodeProject;
 declare const _default: ConfigPlugin<MapboxNavigationPlugProps>;
 export default _default;

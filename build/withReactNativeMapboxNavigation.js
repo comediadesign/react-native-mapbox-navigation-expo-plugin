@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateDeploymentTargetXcodeProject = exports.addMapboxInstallerBlock = exports.addInstallerBlock = exports.addDisableOutputPathsBlock = exports.addConstantBlock = exports.applyCocoaPodsModifications = exports.setExcludedArchitectures = void 0;
+exports.addMapboxInstallerBlock = exports.addInstallerBlock = exports.addDisableOutputPathsBlock = exports.addConstantBlock = exports.applyCocoaPodsModifications = exports.setExcludedArchitectures = void 0;
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const config_plugins_1 = require("@expo/config-plugins");
@@ -144,30 +144,13 @@ const withNavigationInfoPlist = (config, { MBXAccessToken, NSLocationWhenInUseUs
         return config;
     });
 };
-const withIosDeploymentTargetXcodeProject = (config) => {
-    return (0, config_plugins_1.withXcodeProject)(config, (config) => {
-        config.modResults = updateDeploymentTargetXcodeProject(config.modResults);
-        return config;
-    });
-};
-function updateDeploymentTargetXcodeProject(project) {
-    const configurations = project.pbxXCBuildConfigurationSection();
-    // @ts-ignore
-    for (const { buildSettings } of Object.values(configurations ?? {})) {
-        buildSettings.IPHONEOS_DEPLOYMENT_TARGET = "13.0";
-        buildSettings.ONLY_ACTIVE_ARCH = "NO";
-        buildSettings.CODE_SIGNING_ALLOWED = "NO";
-    }
-    return project;
-}
-exports.updateDeploymentTargetXcodeProject = updateDeploymentTargetXcodeProject;
 /**
  * Apply react-native-mapbox-navigation configuration for Expo SDK 47 projects.
  */
 const withReactNativeMapboxNavigation = (config, { RNMBNAVDownloadToken, MBXAccessToken, NSLocationWhenInUseUsageDescription }) => {
-    return withExcludedSimulatorArchitectures(withNavigationInfoPlist(withIosDeploymentTargetXcodeProject(withCocoaPodsInstallerBlocks(config, {
+    return withExcludedSimulatorArchitectures(withNavigationInfoPlist(withCocoaPodsInstallerBlocks(config, {
         RNMBNAVDownloadToken,
-    })), {
+    }), {
         MBXAccessToken,
         NSLocationWhenInUseUsageDescription,
     }));
